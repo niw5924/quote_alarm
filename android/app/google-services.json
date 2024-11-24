@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1043515011210",
+    "project_id": "alarm-app-dd5be",
+    "storage_bucket": "alarm-app-dd5be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043515011210:android:457a1963b812b286de3d73",
+        "android_client_info": {
+          "package_name": "com.example.flutter_alarm_app_2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-t52sKJ22FMzrSapyuVdMta0-zguvbuI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
