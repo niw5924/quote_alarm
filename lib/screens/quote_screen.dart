@@ -1,18 +1,21 @@
+import 'package:alarm/alarm.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:alarm/alarm.dart';
+import 'package:flutter_alarm_app_2/main.dart';
+import 'package:flutter_alarm_app_2/providers/auth_provider.dart';
+import 'package:flutter_alarm_app_2/services/quote_service.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:flutter_puzzle_vcode/flutter_puzzle_vcode.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:math';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'dart:math';
 
-import '../providers/auth_provider.dart';
-import '../services/quote_service.dart';
-import '../main.dart';
+import 'alarm_cancel_slider.dart';
+import 'alarm_cancel_math_problem.dart';
+import 'alarm_cancel_puzzle.dart';
+import 'alarm_cancel_voice_recognition.dart';
 
 class QuoteScreen extends StatefulWidget {
   final Quote quote;
@@ -31,22 +34,29 @@ class QuoteScreen extends StatefulWidget {
   });
 
   @override
-  _QuoteScreenState createState() => _QuoteScreenState();
+  QuoteScreenState createState() => QuoteScreenState();
 }
 
-class _QuoteScreenState extends State<QuoteScreen> {
+class QuoteScreenState extends State<QuoteScreen> {
+  // 슬라이더 관련 상태
   double _sliderValue = 0;
-  final FlutterTts _flutterTts = FlutterTts();
+
+  // 수학 문제 관련 상태
   late int _firstNumber;
   late int _secondNumber;
   final TextEditingController _answerController = TextEditingController();
   String? _errorMessage;
-  bool _isMathProblemGenerated = false; // 수학 문제가 생성되었는지 확인하는 플래그
+  bool _isMathProblemGenerated = false;
+
+  // 음성 인식 관련 상태
   final SpeechToText _speechToText = SpeechToText();
-  late String _randomWord; // 랜덤 단어 필드
+  late String _randomWord;
   bool _isListening = false;
-  String _lastWords = ''; // 실시간으로 인식된 단어
-  String _resultMessage = ''; // 최종 결과 메시지
+  String _lastWords = '';
+  String _resultMessage = '';
+
+  // TTS
+  final FlutterTts _flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -62,10 +72,20 @@ class _QuoteScreenState extends State<QuoteScreen> {
 
   @override
   void dispose() {
-    Alarm.stop(widget.alarmId);
-    _flutterTts.stop();
-    _answerController.dispose();
+    Alarm.stop(widget.alarmId); // 알람 중단
+    _flutterTts.stop(); // TTS 중단
+    _answerController.dispose(); // 텍스트 컨트롤러 정리
     super.dispose();
+  }
+
+  Future<void> cancelAlarm() async {
+    await _saveAlarmDismissalRecord(); // 해제 기록 저장
+    await Alarm.stop(widget.alarmId); // 알람 중단
+    await _flutterTts.stop(); // TTS 중단
+    print('알람이 취소되었습니다.');
+
+    if (!mounted) return; // 위젯이 활성 상태가 아니면 중단
+    Navigator.pop(context); // 화면 닫기
   }
 
   Future<void> _speakQuote() async {
@@ -84,15 +104,15 @@ class _QuoteScreenState extends State<QuoteScreen> {
     setState(() {
       switch (difficulty) {
         case 'easy':
-          _firstNumber = 1 + random.nextInt(10); // 한 자리수 덧셈
+          _firstNumber = 1 + random.nextInt(10);
           _secondNumber = 1 + random.nextInt(10);
           break;
         case 'medium':
-          _firstNumber = 10 + random.nextInt(90); // 두 자리수 덧셈
+          _firstNumber = 10 + random.nextInt(90);
           _secondNumber = 10 + random.nextInt(90);
           break;
         case 'hard':
-          _firstNumber = 100 + random.nextInt(900); // 세 자리수 덧셈
+          _firstNumber = 100 + random.nextInt(900);
           _secondNumber = 100 + random.nextInt(900);
           break;
       }
@@ -111,7 +131,6 @@ class _QuoteScreenState extends State<QuoteScreen> {
     }
   }
 
-  // 랜덤 단어 생성 메서드
   void _generateRandomWord() {
     const wordList = ['happy', 'nice', 'good', 'smile', 'love'];
     final random = Random();
@@ -144,28 +163,22 @@ class _QuoteScreenState extends State<QuoteScreen> {
     );
   }
 
-  // 그만하기 버튼 누르기
   void _stopListening() async {
-    // 음성 인식 종료
     await _speechToText.stop();
 
     setState(() {
-      _isListening = false; // 마이크 비활성화 상태
+      _isListening = false;
     });
 
-    // 결과 비교
     if (_lastWords.toLowerCase() == _randomWord.toLowerCase()) {
-      // 정답인 경우
       setState(() {
-        _resultMessage = '정답입니다!'; // 결과 메시지 업데이트
+        _resultMessage = '정답입니다!';
       });
 
-      // 1초 딜레이 후 알람 해제
       Future.delayed(const Duration(seconds: 1), () {
         cancelAlarm();
       });
     } else {
-      // 틀린 경우
       setState(() {
         _resultMessage = '틀렸습니다. 다시 시도하세요.';
       });
@@ -199,34 +212,36 @@ class _QuoteScreenState extends State<QuoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('오늘의 명언'),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-      ),
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(), // 화면을 터치하면 키보드가 닫히도록 설정
-        child: Center( // Center 위젯으로 전체 Column을 감싸기
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min, // Column의 크기를 자식 요소 크기에 맞추기
-              children: [
-                Text(
-                  '"${widget.quote.content}"',
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  '- ${widget.quote.author}',
-                  style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
-                ),
-                const SizedBox(height: 32),
-                _buildCancelModeUI(),
-              ],
+    return PopScope(
+      canPop: false, // 뒤로가기 제어
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('오늘의 명언'),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+        ),
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(), // 화면을 터치하면 키보드가 닫히도록 설정
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '"${widget.quote.content}"',
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    '- ${widget.quote.author}',
+                    style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
+                  ),
+                  const SizedBox(height: 32),
+                  _buildCancelModeUI(),
+                ],
+              ),
             ),
           ),
         ),
@@ -237,203 +252,32 @@ class _QuoteScreenState extends State<QuoteScreen> {
   Widget _buildCancelModeUI() {
     switch (widget.cancelMode) {
       case AlarmCancelMode.slider:
-        return _buildSliderUI();
+        return AlarmCancelSlider(
+          sliderValue: _sliderValue,
+          onSliderChanged: (value) => setState(() => _sliderValue = value),
+          onSliderComplete: cancelAlarm,
+        );
       case AlarmCancelMode.mathProblem:
         return _isMathProblemGenerated
-            ? _buildMathProblemUI()
+            ? AlarmCancelMathProblem(
+          firstNumber: _firstNumber,
+          secondNumber: _secondNumber,
+          answerController: _answerController,
+          errorMessage: _errorMessage,
+          onValidateAnswer: _validateAnswer,
+        )
             : const CircularProgressIndicator();
       case AlarmCancelMode.puzzle:
-        return _buildPuzzleUI();
+        return AlarmCancelPuzzle(onPuzzleSuccess: cancelAlarm);
       case AlarmCancelMode.voiceRecognition:
-        return _buildVoiceRecognitionUI();
-    }
-  }
-
-  Widget _buildSliderUI() {
-    return Column(
-      children: [
-        const Text(
-          'Slide to Cancel Alarm',
-          style: TextStyle(fontSize: 18),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          width: 150,
-          child: SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              trackHeight: 50.0,
-              thumbShape: const RoundSliderThumbShape(
-                enabledThumbRadius: 30.0,
-              ),
-              overlayShape: const RoundSliderOverlayShape(
-                overlayRadius: 30.0,
-              ),
-              thumbColor: Colors.white,
-              activeTrackColor: const Color(0xFF6BF3B1),
-              inactiveTrackColor: Colors.grey,
-            ),
-            child: Slider(
-              value: _sliderValue,
-              min: 0,
-              max: 1,
-              onChanged: (value) {
-                setState(() {
-                  _sliderValue = value;
-                });
-
-                if (_sliderValue == 1) {
-                  cancelAlarm();
-                }
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMathProblemUI() {
-    return Column(
-      children: [
-        Text(
-          '$_firstNumber + $_secondNumber = ?',
-          style: const TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-            color: Colors.red,
-          ),
-        ),
-        const SizedBox(height: 20),
-        TextField(
-          controller: _answerController,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: const Color(0xFF1A1A1A),
-            hintText: '정답을 입력하세요',
-            hintStyle: TextStyle(color: Colors.grey.shade400),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            errorText: _errorMessage,
-          ),
-          style: const TextStyle(color: Colors.white),
-          keyboardType: TextInputType.number,
-        ),
-        const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: _validateAnswer,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF6BF3B1),
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          child: const Text(
-            '확인',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPuzzleUI() {
-    return ElevatedButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          barrierDismissible: true, // 다이얼로그 바깥을 터치해도 닫히지 않게 설정
-          builder: (BuildContext context) {
-            return FlutterPuzzleVCode(
-              onSuccess: () {
-                print('퍼즐 성공!');
-                cancelAlarm(); // 알람 해제 로직 호출
-                Navigator.pop(context); // 퍼즐 성공 후 다이얼로그 닫기
-              },
-            );
-          },
+        return AlarmCancelVoiceRecognition(
+          randomWord: _randomWord,
+          isListening: _isListening,
+          lastWords: _lastWords,
+          resultMessage: _resultMessage,
+          onStartListening: _startListening,
+          onStopListening: _stopListening,
         );
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF6BF3B1),
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      child: const Text(
-        '퍼즐 해제',
-        style: TextStyle(
-          fontSize: 18,
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildVoiceRecognitionUI() {
-    return Column(
-      children: [
-        Text(
-          "랜덤 단어: $_randomWord", // 랜덤 단어 표시
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton.icon(
-          onPressed: _isListening ? _stopListening : _startListening,
-          icon: Icon(
-            _isListening ? Icons.mic_off : Icons.mic,
-            color: Colors.black,
-          ),
-          label: Text(
-            _isListening ? '그만하기' : '말하기',
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF6BF3B1),
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          "들린 단어: $_lastWords", // 실시간으로 들린 단어 표시
-          style: const TextStyle(fontSize: 18),
-        ),
-        const SizedBox(height: 16),
-        if (_resultMessage.isNotEmpty)
-          Text(
-            _resultMessage,
-            style: TextStyle(
-              fontSize: 18,
-              color: (_resultMessage == '정답입니다!') ? Colors.green : Colors.red,
-            ),
-          ),
-      ],
-    );
-  }
-
-  Future<void> cancelAlarm() async {
-    await _saveAlarmDismissalRecord(); // 해제 기록 저장
-    await Alarm.stop(widget.alarmId);
-    await _flutterTts.stop();
-    print('알람이 취소되었습니다.');
-    if (context.mounted) {
-      Navigator.pop(context);
     }
   }
 }

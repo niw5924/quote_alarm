@@ -92,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return const StarGradeExplanationPopup();
+                                  return StarGradeExplanationPopup(currentMonthDismissals: currentMonthDismissals);
                                 },
                               );
                             },
@@ -343,7 +343,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 style: ElevatedButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24.0),
+                                    borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   backgroundColor: const Color(0xFF6BF3B1),
                                 ),
@@ -369,6 +369,47 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
               ],
+            ),
+            const SizedBox(height: 20),
+            InkWell(
+              onTap: () {
+                showLicensePage(
+                  context: context,
+                  applicationName: '울림소리',
+                  applicationIcon: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Image(
+                      image: AssetImage('assets/image/quote_alarm_icon.png'),
+                      width: 100,
+                      height: 100,
+                    ),
+                  ),
+                  applicationLegalese: '2024 남인우 개인 프로젝트',
+                );
+              },
+              splashColor: Colors.grey.withOpacity(0.2),
+              highlightColor: Colors.transparent,
+              child: Container(
+                width: double.infinity,
+                color: Colors.transparent,
+                child: const Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Color(0xFF00796B),
+                      child: Icon(Icons.book, color: Colors.white),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      '오픈소스 라이선스',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

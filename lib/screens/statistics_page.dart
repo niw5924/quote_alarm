@@ -46,7 +46,7 @@ class StatisticsPage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12.0),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24.0),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                       backgroundColor: const Color(0xFF6BF3B1),
                     ),
@@ -267,7 +267,7 @@ class StatisticsPage extends StatelessWidget {
       Icons.emoji_events, // 1등 트로피
       Icons.emoji_events, // 2등 트로피
       Icons.emoji_events, // 3등 트로피
-      Icons.flag_outlined, // 순위권 밖 (빈 깃발)
+      Icons.sentiment_dissatisfied, // 4등(슬픈 표정)
     ];
 
     return Column(

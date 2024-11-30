@@ -10,13 +10,13 @@ class AlarmListPage extends StatelessWidget {
   final Function(int) onTapAlarm;
 
   const AlarmListPage({
-    Key? key,
+    super.key,
     required this.alarms,
     required this.isDarkTheme,
     required this.onDeleteAlarm,
     required this.onToggleAlarm,
     required this.onTapAlarm,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class AlarmListPage extends StatelessWidget {
                   BoxShadow(
                     color: Colors.black.withOpacity(0.2),
                     blurRadius: 5,
-                    offset: Offset(0, 3),
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),

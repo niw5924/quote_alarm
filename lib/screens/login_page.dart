@@ -4,7 +4,7 @@ import '../providers/auth_provider.dart';
 import 'signup_page.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
