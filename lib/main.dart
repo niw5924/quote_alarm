@@ -128,22 +128,20 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
 
     // 알람이 울릴 때 QuoteScreen으로 이동
     Alarm.ringStream.stream.listen((alarmSettings) async {
-      if (alarmSettings != null) {
-        final matchingAlarm = _alarms.firstWhere(
-              (alarm) => alarm.settings.id == alarmSettings.id,
-          orElse: () => AlarmItem(alarmSettings, false, cancelMode: AlarmCancelMode.slider, volume: 1.0),
-        );
+      final matchingAlarm = _alarms.firstWhere(
+            (alarm) => alarm.settings.id == alarmSettings.id,
+        orElse: () => AlarmItem(alarmSettings, false, cancelMode: AlarmCancelMode.slider, volume: 1.0),
+      );
 
-        if (matchingAlarm.isEnabled) {
-          final int startTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;  // 알람 시작 시간 (초 단위)
+      if (matchingAlarm.isEnabled) {
+        final int startTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;  // 알람 시작 시간 (초 단위)
 
-          // 명언 가져오는 서비스
-          await _showQuoteScreen(matchingAlarm.settings.id, matchingAlarm.cancelMode, matchingAlarm.volume, startTime);
-        } else {
-          await Alarm.stop(alarmSettings.id); // 알람 중지
-        }
+        // 명언 가져오는 서비스
+        await _showQuoteScreen(matchingAlarm.settings.id, matchingAlarm.cancelMode, matchingAlarm.volume, startTime);
+      } else {
+        await Alarm.stop(alarmSettings.id); // 알람 중지
       }
-    });
+        });
   }
 
   Future<void> _saveAlarms() async {

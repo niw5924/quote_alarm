@@ -28,6 +28,9 @@ class AlarmListPage extends StatelessWidget {
         final hour = dateTime.hour.toString().padLeft(2, '0');
         final minute = dateTime.minute.toString().padLeft(2, '0');
 
+        // 알람 해제 유형 텍스트 변환
+        final cancelModeText = _getCancelModeText(alarmItem.cancelMode);
+
         return Dismissible(
           key: UniqueKey(),
           background: Container(
@@ -61,7 +64,7 @@ class AlarmListPage extends StatelessWidget {
                 ],
               ),
               child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 title: Text(
                   '알람 시간: $hour:$minute',
                   style: TextStyle(
@@ -69,12 +72,26 @@ class AlarmListPage extends StatelessWidget {
                     fontSize: 24,
                   ),
                 ),
-                subtitle: Text(
-                  alarmItem.settings.notificationBody.isEmpty ? '' : alarmItem.settings.notificationBody,
-                  style: TextStyle(
-                    color: isDarkTheme ? Colors.white70 : Colors.black87,
-                    fontSize: 16,
-                  ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      cancelModeText,
+                      style: TextStyle(
+                        color: isDarkTheme ? Colors.white70 : Colors.black87,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      alarmItem.settings.notificationBody.isEmpty
+                          ? '메모 없음'
+                          : alarmItem.settings.notificationBody,
+                      style: TextStyle(
+                        color: isDarkTheme ? Colors.white70 : Colors.black87,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
                 ),
                 trailing: Switch(
                   value: alarmItem.isEnabled,
@@ -91,5 +108,21 @@ class AlarmListPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  // 알람 해제 유형을 텍스트로 변환
+  String _getCancelModeText(AlarmCancelMode cancelMode) {
+    switch (cancelMode) {
+      case AlarmCancelMode.slider:
+        return '슬라이더';
+      case AlarmCancelMode.mathProblem:
+        return '수학 문제';
+      case AlarmCancelMode.puzzle:
+        return '퍼즐';
+      case AlarmCancelMode.voiceRecognition:
+        return '음성 인식';
+      default:
+        return '알 수 없음';
+    }
   }
 }
