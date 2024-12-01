@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:alarm/alarm.dart';
 import 'package:flutter_alarm_app_2/providers/auth_provider.dart';
-import 'package:flutter_alarm_app_2/screens/alarm_list_page.dart';
-import 'package:flutter_alarm_app_2/screens/settings_page.dart';
-import 'package:flutter_alarm_app_2/screens/statistics_page.dart';
+import 'package:flutter_alarm_app_2/alarm/alarm_list_page.dart';
+import 'package:flutter_alarm_app_2/settings/settings_page.dart';
+import 'package:flutter_alarm_app_2/statistics/statistics_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_alarm_app_2/screens/alarm_edit_page.dart';
-import 'package:flutter_alarm_app_2/screens/quote_screen.dart';
+import 'package:flutter_alarm_app_2/alarm/alarm_edit_page.dart';
+import 'package:flutter_alarm_app_2/alarm/quote_screen.dart';
 import 'package:flutter_alarm_app_2/services/quote_service.dart';
 
 enum AlarmCancelMode {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MathDifficultyPopup extends StatefulWidget {
-  const MathDifficultyPopup({Key? key}) : super(key: key);
+  const MathDifficultyPopup({super.key});
 
   @override
   _MathDifficultyPopupState createState() => _MathDifficultyPopupState();

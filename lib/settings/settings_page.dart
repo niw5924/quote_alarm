@@ -1,12 +1,13 @@
 import 'dart:ui'; // Blur 처리를 위해 필요
 import 'package:flutter/material.dart';
-import 'package:flutter_alarm_app_2/screens/sound_addition_page.dart';
-import 'package:flutter_alarm_app_2/screens/star_grade_explanation_popup.dart';
+import 'package:flutter_alarm_app_2/auth/logout_popup.dart';
+import 'package:flutter_alarm_app_2/settings/sound_addition_page.dart';
+import 'package:flutter_alarm_app_2/settings/star_grade_explanation_popup.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../providers/auth_provider.dart';
-import 'login_page.dart';
+import '../auth/login_page.dart';
 import 'math_difficulty_popup.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -106,14 +107,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
             InkWell(
-              onTap: () {
+              onTap: () async {
                 if (!authProvider.isLoggedIn) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 } else {
-                  authProvider.signOut();
+                  // 팝업을 UI에서 호출
+                  bool? shouldLogout = await LogoutPopup.show(context);
+                  if (shouldLogout == true) {
+                    await authProvider.signOut();
+                  }
                 }
               },
               splashColor: Colors.grey.withOpacity(0.2),

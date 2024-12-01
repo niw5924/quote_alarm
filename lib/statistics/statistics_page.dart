@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'login_page.dart';
+import '../auth/login_page.dart';
 
 class StatisticsPage extends StatelessWidget {
   const StatisticsPage({super.key});
