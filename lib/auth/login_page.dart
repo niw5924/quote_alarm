@@ -13,20 +13,35 @@ class LoginPage extends StatelessWidget {
 
     // 현재 테마 모드 확인
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDarkMode ? Colors.white : Colors.black; // 다크 모드일 때는 흰색, 라이트 모드일 때는 검은색
+    final textColor = isDarkMode ? Colors.white : Colors.black;
 
-    void signIn() async {
+    Future<void> signIn() async {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+      // 로딩 인디케이터 표시
+      showDialog(
+        context: context,
+        barrierDismissible: false, // 사용자가 닫을 수 없도록 설정
+        barrierColor: Colors.black54, // 배경을 어둡게 처리
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(), // 로딩 인디케이터
+          );
+        },
+      );
+
       try {
         await authProvider.signIn(
           emailController.text.trim(),
           passwordController.text.trim(),
         );
-        // 로그인 성공 시 페이지 닫기
+
+        // 로그인 성공 시 로딩 인디케이터 닫기 및 페이지 닫기
+        if (context.mounted) Navigator.pop(context); // 로딩 창 닫기
         Navigator.pop(context);
       } catch (e) {
         // 로그인 실패 처리
-        print('로그인 실패: $e');
+        if (context.mounted) Navigator.pop(context); // 로딩 창 닫기
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('로그인 실패: $e'),
@@ -53,7 +68,7 @@ class LoginPage extends StatelessWidget {
               Text(
                 'LOGIN',
                 style: TextStyle(
-                  color: textColor, // 테마에 맞는 텍스트 색상 적용
+                  color: textColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
@@ -63,15 +78,15 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 30),
               TextField(
                 controller: emailController,
-                style: TextStyle(color: textColor), // 테마에 맞는 텍스트 색상 적용
+                style: TextStyle(color: textColor),
                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.email, color: textColor), // 테마에 맞는 아이콘 색상 적용
+                  prefixIcon: Icon(Icons.email, color: textColor),
                   labelText: 'Email ID',
-                  labelStyle: TextStyle(color: textColor.withOpacity(0.7)), // 테마에 맞는 라벨 색상 적용
+                  labelStyle: TextStyle(color: textColor.withOpacity(0.7)),
                   filled: true,
                   fillColor: isDarkMode
                       ? Colors.white.withOpacity(0.1)
-                      : Colors.black.withOpacity(0.05), // 다크/라이트 모드에 맞는 필 컬러 적용
+                      : Colors.black.withOpacity(0.05),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
@@ -82,15 +97,15 @@ class LoginPage extends StatelessWidget {
               TextField(
                 controller: passwordController,
                 obscureText: true,
-                style: TextStyle(color: textColor), // 테마에 맞는 텍스트 색상 적용
+                style: TextStyle(color: textColor),
                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.lock, color: textColor), // 테마에 맞는 아이콘 색상 적용
+                  prefixIcon: Icon(Icons.lock, color: textColor),
                   labelText: 'Password',
-                  labelStyle: TextStyle(color: textColor.withOpacity(0.7)), // 테마에 맞는 라벨 색상 적용
+                  labelStyle: TextStyle(color: textColor.withOpacity(0.7)),
                   filled: true,
                   fillColor: isDarkMode
                       ? Colors.white.withOpacity(0.1)
-                      : Colors.black.withOpacity(0.05), // 다크/라이트 모드에 맞는 필 컬러 적용
+                      : Colors.black.withOpacity(0.05),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
@@ -101,7 +116,7 @@ class LoginPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: signIn,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6BF3B1), // 버튼 배경색
+                  backgroundColor: const Color(0xFF6BF3B1),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -127,9 +142,9 @@ class LoginPage extends StatelessWidget {
                   );
                 },
                 child: Text(
-                  'Sign Up', // 회원가입을 영어로 변경
+                  'Sign Up',
                   style: TextStyle(
-                    color: textColor.withOpacity(0.7), // 테마에 맞는 색상 적용
+                    color: textColor.withOpacity(0.7),
                     fontSize: 16,
                   ),
                 ),
