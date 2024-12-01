@@ -51,105 +51,111 @@ class LoginPage extends StatelessWidget {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('로그인'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Image.asset(
-                'assets/image/gear.gif', // gear.gif 이미지 추가
-              ),
-              Text(
-                'LOGIN',
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
+    return GestureDetector(
+      onTap: () {
+        // 화면을 터치하면 키보드 해제
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('로그인'),
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Image.asset(
+                  'assets/image/gear.gif', // gear.gif 이미지 추가
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 30),
-              TextField(
-                controller: emailController,
-                style: TextStyle(color: textColor),
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.email, color: textColor),
-                  labelText: 'Email ID',
-                  labelStyle: TextStyle(color: textColor.withOpacity(0.7)),
-                  filled: true,
-                  fillColor: isDarkMode
-                      ? Colors.white.withOpacity(0.1)
-                      : Colors.black.withOpacity(0.05),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                style: TextStyle(color: textColor),
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.lock, color: textColor),
-                  labelText: 'Password',
-                  labelStyle: TextStyle(color: textColor.withOpacity(0.7)),
-                  filled: true,
-                  fillColor: isDarkMode
-                      ? Colors.white.withOpacity(0.1)
-                      : Colors.black.withOpacity(0.05),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: signIn,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6BF3B1),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
+                Text(
                   'LOGIN',
                   style: TextStyle(
-                    color: Color(0xFF00796B),
-                    fontSize: 18,
+                    color: textColor,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 2,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              const SizedBox(height: 10),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SignupPage()),
-                  );
-                },
-                child: Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    color: textColor.withOpacity(0.7),
-                    fontSize: 16,
+                const SizedBox(height: 30),
+                TextField(
+                  controller: emailController,
+                  style: TextStyle(color: textColor),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.email, color: textColor),
+                    labelText: 'Email ID',
+                    labelStyle: TextStyle(color: textColor.withOpacity(0.7)),
+                    filled: true,
+                    fillColor: isDarkMode
+                        ? Colors.white.withOpacity(0.1)
+                        : Colors.black.withOpacity(0.05),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  style: TextStyle(color: textColor),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.lock, color: textColor),
+                    labelText: 'Password',
+                    labelStyle: TextStyle(color: textColor.withOpacity(0.7)),
+                    filled: true,
+                    fillColor: isDarkMode
+                        ? Colors.white.withOpacity(0.1)
+                        : Colors.black.withOpacity(0.05),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: signIn,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6BF3B1),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'LOGIN',
+                    style: TextStyle(
+                      color: Color(0xFF00796B),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignupPage()),
+                    );
+                  },
+                  child: Text(
+                    'Sign Up',
+                    style: TextStyle(
+                      color: textColor.withOpacity(0.7),
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

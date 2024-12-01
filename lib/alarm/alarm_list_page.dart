@@ -75,6 +75,7 @@ class AlarmListPage extends StatelessWidget {
                         style: TextStyle(
                           color: isDarkTheme ? Colors.white : Colors.black,
                           fontSize: 24,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       TextSpan(
@@ -82,7 +83,7 @@ class AlarmListPage extends StatelessWidget {
                         style: TextStyle(
                           color: isDarkTheme ? Colors.white : Colors.black,
                           fontSize: 32,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
