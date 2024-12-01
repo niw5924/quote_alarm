@@ -315,6 +315,8 @@ class _AlarmEditPageState extends State<AlarmEditPage> {
               ),
             ),
             const SizedBox(height: 16),
+            const Text('메모', style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
                 color: const Color(0xFF1A1A1A),
