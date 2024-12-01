@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../main.dart';
 
@@ -25,8 +26,9 @@ class AlarmListPage extends StatelessWidget {
       itemBuilder: (context, index) {
         final alarmItem = alarms[index];
         final dateTime = alarmItem.settings.dateTime;
-        final hour = dateTime.hour.toString().padLeft(2, '0');
-        final minute = dateTime.minute.toString().padLeft(2, '0');
+
+        // 시간 표시 포맷팅
+        final formattedTime = DateFormat('a h:mm').format(dateTime).replaceAll('AM', '오전').replaceAll('PM', '오후');
 
         // 알람 해제 유형 텍스트 변환
         final cancelModeText = _getCancelModeText(alarmItem.cancelMode);
@@ -65,11 +67,25 @@ class AlarmListPage extends StatelessWidget {
               ),
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                title: Text(
-                  '알람 시간: $hour:$minute',
-                  style: TextStyle(
-                    color: isDarkTheme ? Colors.white : Colors.black,
-                    fontSize: 24,
+                title: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${formattedTime.split(' ')[0]} ', // 오전/오후
+                        style: TextStyle(
+                          color: isDarkTheme ? Colors.white : Colors.black,
+                          fontSize: 24,
+                        ),
+                      ),
+                      TextSpan(
+                        text: formattedTime.split(' ')[1], // 시간 (e.g., 10:39)
+                        style: TextStyle(
+                          color: isDarkTheme ? Colors.white : Colors.black,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 subtitle: Column(

@@ -224,13 +224,13 @@ class StatisticsPage extends StatelessWidget {
                                       return Text('슬라이더',
                                           style: style);
                                     case 1:
-                                      return Text('수학문제',
+                                      return Text('수학 문제',
                                           style: style);
                                     case 2:
                                       return Text('퍼즐',
                                           style: style);
                                     case 3:
-                                      return Text('음성인식',
+                                      return Text('음성 인식',
                                           style: style);
                                     default:
                                       return const Text('');
