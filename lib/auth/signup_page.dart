@@ -11,33 +11,47 @@ class SignupPage extends StatelessWidget {
     final passwordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
 
-    // 현재 테마 모드 확인
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDarkMode ? Colors.white : Colors.black; // 다크 모드일 때 흰색, 라이트 모드일 때 검은색
+    final textColor = isDarkMode ? Colors.white : Colors.black;
 
-    void signUp() async {
-      if (passwordController.text == confirmPasswordController.text) {
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        try {
-          await authProvider.signUp(
-            emailController.text.trim(),
-            passwordController.text.trim(),
-          );
-          // 회원가입 성공 시 로그인 페이지로 돌아가기
-          Navigator.pop(context);
-        } catch (e) {
-          print('회원가입 실패: $e');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('회원가입 실패: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      } else {
+    Future<void> signUp() async {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+      // 비밀번호 확인 로직
+      if (passwordController.text != confirmPasswordController.text) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('비밀번호가 일치하지 않습니다.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return; // 검증 실패 시 회원가입 중단
+      }
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        barrierColor: Colors.black54,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      );
+
+      try {
+        await authProvider.signUp(
+          emailController.text.trim(),
+          passwordController.text.trim(),
+        );
+
+        if (context.mounted) Navigator.pop(context); // 로딩 닫기
+        Navigator.pop(context); // 회원가입 성공 후 이전 화면으로 이동
+      } catch (e) {
+        if (context.mounted) Navigator.pop(context); // 로딩 닫기
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('회원가입 실패: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -46,8 +60,7 @@ class SignupPage extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        // 화면을 터치하면 키보드 해제
-        FocusScope.of(context).unfocus();
+        FocusScope.of(context).unfocus(); // 화면 터치 시 키보드 해제
       },
       child: Scaffold(
         appBar: AppBar(
@@ -57,16 +70,13 @@ class SignupPage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Image.asset(
-                  'assets/image/gear.gif', // gear.gif 이미지 추가
-                ),
+                Image.asset('assets/image/gear.gif'),
                 Text(
-                  'Sign Up', // 회원가입 텍스트를 영어로 변경
+                  'SIGN UP',
                   style: TextStyle(
-                    color: textColor, // 테마에 맞는 텍스트 색상 적용
+                    color: textColor,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 2,
@@ -76,15 +86,15 @@ class SignupPage extends StatelessWidget {
                 const SizedBox(height: 30),
                 TextField(
                   controller: emailController,
-                  style: TextStyle(color: textColor), // 테마에 맞는 텍스트 색상 적용
+                  style: TextStyle(color: textColor),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.email, color: textColor), // 테마에 맞는 아이콘 색상 적용
+                    prefixIcon: Icon(Icons.email, color: textColor),
                     labelText: 'Email ID',
-                    labelStyle: TextStyle(color: textColor.withOpacity(0.7)), // 테마에 맞는 라벨 색상 적용
+                    labelStyle: TextStyle(color: textColor.withOpacity(0.7)),
                     filled: true,
                     fillColor: isDarkMode
                         ? Colors.white.withOpacity(0.1)
-                        : Colors.black.withOpacity(0.05), // 다크/라이트 모드에 맞는 필 컬러 적용
+                        : Colors.black.withOpacity(0.05),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
@@ -95,15 +105,15 @@ class SignupPage extends StatelessWidget {
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  style: TextStyle(color: textColor), // 테마에 맞는 텍스트 색상 적용
+                  style: TextStyle(color: textColor),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock, color: textColor), // 테마에 맞는 아이콘 색상 적용
+                    prefixIcon: Icon(Icons.lock, color: textColor),
                     labelText: 'Password',
-                    labelStyle: TextStyle(color: textColor.withOpacity(0.7)), // 테마에 맞는 라벨 색상 적용
+                    labelStyle: TextStyle(color: textColor.withOpacity(0.7)),
                     filled: true,
                     fillColor: isDarkMode
                         ? Colors.white.withOpacity(0.1)
-                        : Colors.black.withOpacity(0.05), // 다크/라이트 모드에 맞는 필 컬러 적용
+                        : Colors.black.withOpacity(0.05),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
@@ -114,15 +124,15 @@ class SignupPage extends StatelessWidget {
                 TextField(
                   controller: confirmPasswordController,
                   obscureText: true,
-                  style: TextStyle(color: textColor), // 테마에 맞는 텍스트 색상 적용
+                  style: TextStyle(color: textColor),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock, color: textColor), // 테마에 맞는 아이콘 색상 적용
+                    prefixIcon: Icon(Icons.lock_outline, color: textColor),
                     labelText: 'Confirm Password',
-                    labelStyle: TextStyle(color: textColor.withOpacity(0.7)), // 테마에 맞는 라벨 색상 적용
+                    labelStyle: TextStyle(color: textColor.withOpacity(0.7)),
                     filled: true,
                     fillColor: isDarkMode
                         ? Colors.white.withOpacity(0.1)
-                        : Colors.black.withOpacity(0.05), // 다크/라이트 모드에 맞는 필 컬러 적용
+                        : Colors.black.withOpacity(0.05),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
@@ -133,14 +143,14 @@ class SignupPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: signUp,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6BF3B1), // 버튼 배경색
+                    backgroundColor: const Color(0xFF6BF3B1),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: const Text(
-                    'Sign Up',
+                    'SIGN UP',
                     style: TextStyle(
                       color: Color(0xFF00796B),
                       fontSize: 18,
