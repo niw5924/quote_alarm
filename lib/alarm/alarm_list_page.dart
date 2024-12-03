@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_alarm_app_2/alarm/alarm_delete_popup.dart';
 import 'package:intl/intl.dart';
 
 import '../main.dart';
@@ -36,7 +37,10 @@ class AlarmListPage extends StatelessWidget {
         return Dismissible(
           key: UniqueKey(),
           background: Container(
-            color: Colors.red,
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(15),
+            ),
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.symmetric(horizontal: 20),
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -47,13 +51,17 @@ class AlarmListPage extends StatelessWidget {
             ),
           ),
           direction: DismissDirection.endToStart,
+          confirmDismiss: (direction) async {
+            final shouldDelete = await AlarmDeletePopup.show(context);
+            return shouldDelete ?? false; // null이면 삭제 취소
+          },
           onDismissed: (direction) {
             onDeleteAlarm(index, alarmItem);
           },
           child: Opacity(
-            opacity: alarmItem.isEnabled ? 1.0 : 0.5, // 알람이 꺼져있으면 투명도 0.5, 켜져있으면 1.0
+            opacity: alarmItem.isEnabled ? 1.0 : 0.5,
             child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16), // 리스트 항목 간 간격 추가
+              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               decoration: BoxDecoration(
                 color: isDarkTheme ? Colors.grey[850] : const Color(0xFFFCFCFC),
                 borderRadius: BorderRadius.circular(15),
@@ -71,7 +79,7 @@ class AlarmListPage extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: '${formattedTime.split(' ')[0]} ', // 오전/오후
+                        text: '${formattedTime.split(' ')[0]} ',
                         style: TextStyle(
                           color: isDarkTheme ? Colors.white : Colors.black,
                           fontSize: 24,
@@ -79,7 +87,7 @@ class AlarmListPage extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: formattedTime.split(' ')[1], // 시간 (e.g., 10:39)
+                        text: formattedTime.split(' ')[1],
                         style: TextStyle(
                           color: isDarkTheme ? Colors.white : Colors.black,
                           fontSize: 32,
