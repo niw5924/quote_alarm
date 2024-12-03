@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:glowy_borders/glowy_borders.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
@@ -41,29 +42,42 @@ class StatisticsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16.0),
                 Container(
-                  width: double.infinity,
+                  width: double.infinity, // 부모 Container가 가로 전체를 차지
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      backgroundColor: const Color(0xFF6BF3B1),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginPage()),
-                      );
-                    },
-                    child: const Text(
-                      '로그인하고 통계 확인하기',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                  child: AnimatedGradientBorder(
+                    borderSize: 1.0,
+                    glowSize: 4.0,
+                    gradientColors: const [
+                      Color(0xFF25EEFF),
+                      Color(0xFF38FF99),
+                    ],
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: SizedBox(
+                      width: double.infinity, // 버튼이 부모 너비를 따라감
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12.0), // 높이는 패딩으로 설정
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          backgroundColor: const Color(0xFF6BF3B1),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          '로그인하고 통계 확인하기',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),
