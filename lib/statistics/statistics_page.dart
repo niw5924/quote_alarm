@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -33,8 +34,8 @@ class StatisticsPage extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Image.asset(
-                    'assets/image/graph.gif',
+                  child: Lottie.asset(
+                    'assets/animation/lottie_statistics.json',
                     fit: BoxFit.cover,
                   ),
                 ),
