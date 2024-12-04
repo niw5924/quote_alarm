@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:alarm/alarm.dart';
+import 'package:flutter_alarm_app_2/news/news_page.dart';
 import 'package:flutter_alarm_app_2/providers/auth_provider.dart';
 import 'package:flutter_alarm_app_2/alarm/alarm_list_page.dart';
 import 'package:flutter_alarm_app_2/settings/settings_page.dart';
@@ -96,10 +97,6 @@ class _MyAppState extends State<MyApp> {
           backgroundColor: const Color(0xFFF8EDD8),
           selectedItemColor: Colors.black,
           unselectedItemColor: Colors.grey[700],
-        ),
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.black, fontSize: 20),
-          bodyMedium: TextStyle(color: Colors.black),
         ),
       ),
       home: AlarmHomePage(onThemeToggle: _toggleTheme, isDarkTheme: _isDarkTheme),
@@ -241,6 +238,45 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget getBody() {
+      switch (_selectedIndex) {
+        case 0:
+          return AlarmListPage(
+            alarms: _alarms,
+            isDarkTheme: widget.isDarkTheme,
+            onDeleteAlarm: deleteAlarm,
+            onToggleAlarm: _toggleAlarm,
+            onTapAlarm: (index) async {
+              final updatedAlarmItem = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AlarmEditPage(
+                    alarmSettings: _alarms[index].settings,
+                    cancelMode: _alarms[index].cancelMode,
+                    volume: _alarms[index].volume,
+                  ),
+                ),
+              );
+
+              if (updatedAlarmItem != null) {
+                setState(() {
+                  _alarms[index] = updatedAlarmItem;
+                  _saveAlarms();
+                });
+              }
+            },
+          );
+        case 1:
+          return const StatisticsPage(); // 통계 페이지
+        case 2:
+          return const NewsPage(); // 뉴스 페이지 추가
+        case 3:
+          return SettingsPage(isDarkTheme: widget.isDarkTheme); // 설정 페이지
+        default:
+          return const Center(child: Text('페이지를 찾을 수 없습니다.'));
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('울림소리'),
@@ -257,44 +293,21 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
           ),
         ],
       ),
-      body: _selectedIndex == 0
-          ? AlarmListPage(
-        alarms: _alarms,
-        isDarkTheme: widget.isDarkTheme,
-        onDeleteAlarm: deleteAlarm,
-        onToggleAlarm: _toggleAlarm,
-        onTapAlarm: (index) async {
-          final updatedAlarmItem = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AlarmEditPage(
-                alarmSettings: _alarms[index].settings,
-                cancelMode: _alarms[index].cancelMode,
-                volume: _alarms[index].volume,
-              ),
-            ),
-          );
-
-          if (updatedAlarmItem != null) {
-            setState(() {
-              _alarms[index] = updatedAlarmItem;
-              _saveAlarms();
-            });
-          }
-        },
-      )
-          : _selectedIndex == 1
-          ? const StatisticsPage() // 통계 페이지 추가
-          : SettingsPage(isDarkTheme: widget.isDarkTheme),
+      body: getBody(), // getBody를 사용해 선택한 페이지 렌더링
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // 고정형 스타일
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.alarm),
             label: '알람',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart), // 통계 아이콘 추가
+            icon: Icon(Icons.bar_chart),
             label: '통계',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.article),
+            label: '뉴스',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

@@ -89,7 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           const SizedBox(width: 8),
                           IconButton(
-                            icon: const Icon(Icons.info_outline, size: 20, color: Colors.grey),
+                            icon: const Icon(Icons.info_outline, size: 20),
                             onPressed: () {
                               showDialog(
                                 context: context,
