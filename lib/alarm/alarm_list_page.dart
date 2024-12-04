@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_alarm_app_2/alarm/alarm_delete_popup.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import '../main.dart';
@@ -121,7 +123,37 @@ class AlarmListPage extends StatelessWidget {
                 trailing: Switch(
                   value: alarmItem.isEnabled,
                   onChanged: (value) {
+                    HapticFeedback.mediumImpact(); // 미디엄 햅틱 피드백 추가
                     onToggleAlarm(alarmItem);
+
+                    if (value) { // 스위치가 켜질 때만 실행
+                      final now = DateTime.now();
+                      final alarmTime = alarmItem.settings.dateTime;
+
+                      if (alarmTime.isAfter(now)) {
+                        final difference = alarmTime.difference(now);
+                        final hours = difference.inHours;
+                        final minutes = difference.inMinutes % 60;
+
+                        Fluttertoast.showToast(
+                          msg: hours > 0
+                              ? '알람이 약 $hours시간 $minutes분 후에 울립니다.'
+                              : '알람이 약 $minutes분 후에 울립니다.',
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.black.withOpacity(0.8),
+                          textColor: Colors.white,
+                        );
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: '알람 시간이 현재 시간보다 이전입니다.',
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
+                          textColor: Colors.white,
+                        );
+                      }
+                    }
                   },
                 ),
                 onTap: () {
