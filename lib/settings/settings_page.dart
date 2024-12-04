@@ -278,28 +278,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       .snapshots()
                       : null,
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData || !authProvider.isLoggedIn) {
-                      return const HeatMapCalendar(
-                        datasets: {},
-                        defaultColor: Color(0xFFB0BEC5),
-                        fontSize: 20,
-                        monthFontSize: 22,
-                        weekFontSize: 14,
-                        textColor: Color(0xFF263238),
-                        flexible: true,
-                        colorMode: ColorMode.color,
-                        showColorTip: false,
-                        colorsets: {
-                          0: Color(0xFFB0BEC5),
-                          1: Color(0xFF78909C),
-                          2: Color(0xFF455A64),
-                        },
-                      );
-                    } else if (snapshot.connectionState == ConnectionState.active) {
+                    Map<DateTime, int> datasets = {};
+                    if (snapshot.connectionState == ConnectionState.active &&
+                        snapshot.hasData &&
+                        authProvider.isLoggedIn) {
                       final data = snapshot.data?.data() as Map<String, dynamic>?;
                       final alarmDismissals = data?['alarmDismissals'] ?? {};
-
-                      Map<DateTime, int> datasets = {};
 
                       alarmDismissals.forEach((date, alarms) {
                         int minDuration = alarms.values
@@ -313,25 +297,24 @@ class _SettingsPageState extends State<SettingsPage> {
                             ? 2
                             : 0;
                       });
-
-                      return HeatMapCalendar(
-                        datasets: datasets,
-                        defaultColor: const Color(0xFFB0BEC5),
-                        fontSize: 20,
-                        monthFontSize: 22,
-                        weekFontSize: 14,
-                        textColor: const Color(0xFF263238),
-                        flexible: true,
-                        colorMode: ColorMode.color,
-                        showColorTip: false,
-                        colorsets: const {
-                          0: Color(0xFFB0BEC5),
-                          1: Color(0xFF78909C),
-                          2: Color(0xFF455A64),
-                        },
-                      );
                     }
-                    return const Center(child: CircularProgressIndicator());
+
+                    return HeatMapCalendar(
+                      datasets: datasets,
+                      defaultColor: const Color(0xFFB0BEC5),
+                      fontSize: 20,
+                      monthFontSize: 22,
+                      weekFontSize: 14,
+                      textColor: const Color(0xFF263238),
+                      flexible: true,
+                      colorMode: ColorMode.color,
+                      showColorTip: false,
+                      colorsets: const {
+                        0: Color(0xFFB0BEC5),
+                        1: Color(0xFF78909C),
+                        2: Color(0xFF455A64),
+                      },
+                    );
                   },
                 ),
                 if (!authProvider.isLoggedIn)
@@ -343,7 +326,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           color: Colors.transparent,
                           child: Center(
                             child: Container(
-                              width: double.infinity, // 부모의 너비를 가득 채움
+                              width: double.infinity,
                               padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               child: AnimatedGradientBorder(
                                 borderSize: 1.0,
@@ -354,7 +337,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ],
                                 borderRadius: BorderRadius.circular(10.0),
                                 child: SizedBox(
-                                  width: double.infinity, // 버튼도 가로 전체를 채우도록 설정
+                                  width: double.infinity,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -366,7 +349,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                     onPressed: () {
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => const LoginPage()),
+                                        MaterialPageRoute(
+                                            builder: (context) => const LoginPage()),
                                       );
                                     },
                                     child: const Text(
