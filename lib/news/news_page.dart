@@ -67,10 +67,12 @@ class _NewsPageState extends State<NewsPage> {
   void _openNewsLink(String url) async {
     final uri = Uri.parse(url); // String을 Uri로 변환
 
-    if (!await canLaunchUrl(uri)) { // canLaunchUrl이 무조건 false를 반환함.
-      await launchUrl(uri);
-    } else {
-      throw 'Could not launch $url';
-    }
+    await launchUrl(uri);
+
+    // if (await canLaunchUrl(uri)) { // canLaunchUrl이 무조건 false를 반환함. 이상함. 오늘은 true를 반환함.
+    //   await launchUrl(uri);
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
   }
 }
