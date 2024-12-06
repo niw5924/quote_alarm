@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:alarm/alarm.dart';
+import 'package:flutter_alarm_app_2/home/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../main.dart';
 
 class AlarmEditPage extends StatefulWidget {
   final AlarmSettings alarmSettings;

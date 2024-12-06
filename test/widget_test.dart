@@ -6,7 +6,7 @@ import 'package:flutter_alarm_app_2/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp(isDarkTheme: true)); // 필수 매개변수 전달
+    await tester.pumpWidget(const QuoteAlarmApp(isDarkTheme: true)); // 필수 매개변수 전달
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

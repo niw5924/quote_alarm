@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_alarm_app_2/alarm/alarm_delete_popup.dart';
+import 'package:flutter_alarm_app_2/home/home_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-
-import '../main.dart';
 
 class AlarmListPage extends StatelessWidget {
   final List<AlarmItem> alarms;
