@@ -7,6 +7,7 @@ import 'package:flutter_alarm_app_2/news/news_page.dart';
 import 'package:flutter_alarm_app_2/services/quote_service.dart';
 import 'package:flutter_alarm_app_2/settings/settings_page.dart';
 import 'package:flutter_alarm_app_2/statistics/statistics_page.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum AlarmCancelMode {
@@ -104,7 +105,11 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
     final updatedAlarmItem = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AlarmEditPage(alarmSettings: newAlarmSettings, cancelMode: AlarmCancelMode.slider, volume: 1.0), // volume 추가
+        builder: (context) => AlarmEditPage(
+          alarmSettings: newAlarmSettings,
+          cancelMode: AlarmCancelMode.slider,
+          volume: 1.0, // volume 추가
+        ),
       ),
     );
 
@@ -113,6 +118,25 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
         _alarms.add(updatedAlarmItem);
       });
       _saveAlarms();
+
+      // 알람이 울리기까지 남은 시간 계산
+      final now = DateTime.now();
+      final alarmTime = updatedAlarmItem.settings.dateTime;
+
+      final difference = alarmTime.difference(now);
+      final hours = difference.inHours;
+      final minutes = difference.inMinutes % 60;
+
+      // 토스트 메시지 표시
+      Fluttertoast.showToast(
+        msg: hours > 0
+            ? '알람이 약 $hours시간 $minutes분 후에 울립니다.'
+            : '알람이 약 $minutes분 후에 울립니다.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.black.withOpacity(0.8),
+        textColor: Colors.white,
+      );
     }
   }
 
