@@ -22,7 +22,7 @@ class QuoteScreen extends StatefulWidget {
   final int alarmId;
   final AlarmCancelMode cancelMode;
   final double volume;
-  final int alarmStartTime;
+  final DateTime alarmStartTime;
 
   const QuoteScreen({
     super.key,
@@ -191,18 +191,26 @@ class QuoteScreenState extends State<QuoteScreen> {
     final uid = authProvider.user?.uid;
 
     if (uid != null) {
-      final int endTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      final int duration = endTime - widget.alarmStartTime;
-
       // 날짜를 'yyyy-MM-dd' 형식으로 포맷팅
       String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      // 알람 설정 시간 포맷팅
+      String alarmStartTimeFormatted = DateFormat('HH:mm:ss').format(widget.alarmStartTime);
+
+      // 알람 해제 시간 포맷팅
+      String alarmEndTimeFormatted = DateFormat('HH:mm:ss').format(DateTime.now());
+
+      // duration 계산
+      int duration = DateTime.now().difference(widget.alarmStartTime).inSeconds;
 
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'alarmDismissals': {
           formattedDate: {
             '${widget.alarmId}': {
               'cancelMode': widget.cancelMode.toString().split('.').last,
-              'duration': duration,
+              'alarmStartTime': alarmStartTimeFormatted, // 알람 설정 시간
+              'dismissalTime': alarmEndTimeFormatted, // 알람 해제 시간
+              'duration': duration, // 알람 설정 시간과 해제 시간의 차이 (초)
             }
           }
         }

@@ -52,17 +52,17 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
       );
 
       if (matchingAlarm.isEnabled) {
-        final int startTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;  // 알람 시작 시간 (초 단위)
+        final DateTime alarmStartTime = DateTime.now();
 
         // 명언 가져오는 서비스
-        await _showQuoteScreen(matchingAlarm.settings.id, matchingAlarm.cancelMode, matchingAlarm.volume, startTime);
+        await _showQuoteScreen(matchingAlarm.settings.id, matchingAlarm.cancelMode, matchingAlarm.volume, alarmStartTime);
       } else {
         await Alarm.stop(alarmSettings.id); // 알람 중지
       }
     });
   }
 
-  Future<void> _showQuoteScreen(int alarmId, AlarmCancelMode cancelMode, double volume, int alarmStartTime) async {
+  Future<void> _showQuoteScreen(int alarmId, AlarmCancelMode cancelMode, double volume, DateTime alarmStartTime) async {
     final quoteService = QuoteService();
     try {
       final quote = await quoteService.fetchRandomQuote();
