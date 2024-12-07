@@ -241,24 +241,26 @@ class QuoteScreenState extends State<QuoteScreen> {
         body: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(), // 화면을 터치하면 키보드가 닫히도록 설정
           child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '"${widget.quote.content}"',
-                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '- ${widget.quote.author}',
-                    style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
-                  ),
-                  const SizedBox(height: 32),
-                  _buildCancelModeUI(),
-                ],
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '"${widget.quote.content}"',
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      '- ${widget.quote.author}',
+                      style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
+                    ),
+                    const SizedBox(height: 32),
+                    _buildCancelModeUI(),
+                  ],
+                ),
               ),
             ),
           ),
