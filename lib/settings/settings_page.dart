@@ -1,10 +1,10 @@
-import 'dart:ui'; // Blur 처리를 위해 필요
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_alarm_app_2/auth/logout_popup.dart';
 import 'package:flutter_alarm_app_2/settings/sound_addition_page.dart';
 import 'package:flutter_alarm_app_2/settings/star_grade_explanation_popup.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
-import 'package:glowy_borders/glowy_borders.dart';
+import 'package:gradient_borders/gradient_borders.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../providers/auth_provider.dart';
@@ -322,46 +322,37 @@ class _SettingsPageState extends State<SettingsPage> {
                     child: ClipRect(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                        child: Container(
-                          color: Colors.transparent,
-                          child: Center(
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: AnimatedGradientBorder(
-                                borderSize: 1.0,
-                                glowSize: 4.0,
-                                gradientColors: const [
-                                  Color(0xFF25EEFF),
-                                  Color(0xFF38FF99),
-                                ],
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ),
-                                      backgroundColor: const Color(0xFF6BF3B1),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => const LoginPage()),
-                                      );
-                                    },
-                                    child: const Text(
-                                      '로그인하고 잔디 채우기',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
+                        child: Center(
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: const GradientBoxBorder(
+                                gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                backgroundColor: const Color(0xFF6BF3B1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(7.0),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const LoginPage()),
+                                );
+                              },
+                              child: const Text(
+                                '로그인하고 잔디 채우기',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),

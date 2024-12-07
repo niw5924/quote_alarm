@@ -384,14 +384,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.2.8"
-  glowy_borders:
+  gradient_borders:
     dependency: "direct main"
     description:
-      name: glowy_borders
-      sha256: a0ace5b193047deab00ed2646065b0ef91bf1efef5b3579851bcc6bc7e0748b4
+      name: gradient_borders
+      sha256: b1cd969552c83f458ff755aa68e13a0327d09f06c3f42f471b423b01427f21f8
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.1"
   html_unescape:
     dependency: "direct main"
     description:
