@@ -2,6 +2,7 @@ import 'package:alarm/alarm.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_alarm_app_2/alarm/alarm_cancel_slider.dart';
+import 'package:flutter_alarm_app_2/alarm/alarm_success_screen.dart';
 import 'package:flutter_alarm_app_2/home/home_page.dart';
 import 'package:flutter_alarm_app_2/providers/auth_provider.dart';
 import 'package:flutter_alarm_app_2/services/quote_service.dart';
@@ -85,7 +86,16 @@ class QuoteScreenState extends State<QuoteScreen> {
     print('알람이 취소되었습니다.');
 
     if (!mounted) return; // 위젯이 활성 상태가 아니면 중단
-    Navigator.pop(context); // 화면 닫기
+
+    // 알람 성공 스크린으로 이동
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AlarmSuccessScreen(),
+      ),
+    );
+
+    Navigator.pop(context);
   }
 
   Future<void> _speakQuote() async {
