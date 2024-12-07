@@ -62,41 +62,6 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
     });
   }
 
-  Future<void> _saveAlarms() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> alarmList = _alarms.map((alarm) {
-      return '${alarm.settings.id}|${alarm.settings.dateTime.toIso8601String()}|${alarm.isEnabled}|${alarm.cancelMode.index}|${alarm.volume}|${alarm.settings.assetAudioPath}|${alarm.settings.notificationBody}';
-    }).toList();
-    prefs.setStringList('alarms', alarmList);
-  }
-
-  Future<void> _loadAlarms() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String>? alarmList = prefs.getStringList('alarms');
-    if (alarmList != null) {
-      setState(() {
-        _alarms = alarmList.map((alarmString) {
-          final parts = alarmString.split('|');
-          final alarmSettings = AlarmSettings(
-            id: int.parse(parts[0]),
-            dateTime: DateTime.parse(parts[1]),
-            assetAudioPath: parts[5],
-            loopAudio: true,
-            vibrate: true,
-            notificationTitle: '알람',
-            notificationBody: parts.length > 6 ? parts[6] : '',
-            enableNotificationOnKill: true,
-          );
-          final isEnabled = parts[2] == 'true';
-          final cancelMode = AlarmCancelMode.values[int.parse(parts[3])];
-          final volume = double.parse(parts[4]); // volume 추가
-          return AlarmItem(alarmSettings, isEnabled, cancelMode: cancelMode, volume: volume);
-        }).toList();
-      });
-    }
-  }
-
-  // QuoteScreen으로 이동하는 메서드 수정 (alarmStartTime 추가)
   Future<void> _showQuoteScreen(int alarmId, AlarmCancelMode cancelMode, double volume, int alarmStartTime) async {
     final quoteService = QuoteService();
     try {
@@ -151,6 +116,55 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
     }
   }
 
+  Future<void> _saveAlarms() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> alarmList = _alarms.map((alarm) {
+      return '${alarm.settings.id}|${alarm.settings.dateTime.toIso8601String()}|${alarm.isEnabled}|${alarm.cancelMode.index}|${alarm.volume}|${alarm.settings.assetAudioPath}|${alarm.settings.notificationBody}';
+    }).toList();
+    prefs.setStringList('alarms', alarmList);
+  }
+
+  Future<void> _loadAlarms() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? alarmList = prefs.getStringList('alarms');
+    if (alarmList != null) {
+      setState(() {
+        _alarms = alarmList.map((alarmString) {
+          final parts = alarmString.split('|');
+          final alarmSettings = AlarmSettings(
+            id: int.parse(parts[0]),
+            dateTime: DateTime.parse(parts[1]),
+            assetAudioPath: parts[5],
+            loopAudio: true,
+            vibrate: true,
+            notificationTitle: '알람',
+            notificationBody: parts.length > 6 ? parts[6] : '',
+            enableNotificationOnKill: true,
+          );
+          final isEnabled = parts[2] == 'true';
+          final cancelMode = AlarmCancelMode.values[int.parse(parts[3])];
+          final volume = double.parse(parts[4]); // volume 추가
+          return AlarmItem(alarmSettings, isEnabled, cancelMode: cancelMode, volume: volume);
+        }).toList();
+      });
+    }
+  }
+
+  void _toggleAlarm(AlarmItem alarmItem) {
+    setState(() {
+      alarmItem.isEnabled = !alarmItem.isEnabled;
+      _saveAlarms();
+    });
+  }
+
+  void deleteAlarm(int index, AlarmItem alarmItem) async {
+    await Alarm.stop(alarmItem.settings.id);
+    setState(() {
+      _alarms.removeAt(index);
+    });
+    _saveAlarms();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -165,8 +179,8 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
           return AlarmListPage(
             alarms: _alarms,
             isDarkTheme: widget.isDarkTheme,
-            onDeleteAlarm: deleteAlarm,
             onToggleAlarm: _toggleAlarm,
+            onDeleteAlarm: deleteAlarm,
             onTapAlarm: (index) async {
               final updatedAlarmItem = await Navigator.push(
                 context,
@@ -239,20 +253,5 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
         onTap: _onItemTapped,
       ),
     );
-  }
-
-  void _toggleAlarm(AlarmItem alarmItem) {
-    setState(() {
-      alarmItem.isEnabled = !alarmItem.isEnabled;
-      _saveAlarms();
-    });
-  }
-
-  void deleteAlarm(int index, AlarmItem alarmItem) async {
-    await Alarm.stop(alarmItem.settings.id);
-    setState(() {
-      _alarms.removeAt(index);
-    });
-    _saveAlarms();
   }
 }

@@ -8,18 +8,34 @@ import 'package:intl/intl.dart';
 class AlarmListPage extends StatelessWidget {
   final List<AlarmItem> alarms;
   final bool isDarkTheme;
-  final Function(int, AlarmItem) onDeleteAlarm;
   final Function(AlarmItem) onToggleAlarm;
+  final Function(int, AlarmItem) onDeleteAlarm;
   final Function(int) onTapAlarm;
 
   const AlarmListPage({
     super.key,
     required this.alarms,
     required this.isDarkTheme,
-    required this.onDeleteAlarm,
     required this.onToggleAlarm,
+    required this.onDeleteAlarm,
     required this.onTapAlarm,
   });
+
+  // 알람 해제 유형을 텍스트로 변환
+  String _getCancelModeText(AlarmCancelMode cancelMode) {
+    switch (cancelMode) {
+      case AlarmCancelMode.slider:
+        return '슬라이더';
+      case AlarmCancelMode.mathProblem:
+        return '수학 문제';
+      case AlarmCancelMode.puzzle:
+        return '퍼즐';
+      case AlarmCancelMode.voiceRecognition:
+        return '음성 인식';
+      default:
+        return '알 수 없음';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,21 +180,5 @@ class AlarmListPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  // 알람 해제 유형을 텍스트로 변환
-  String _getCancelModeText(AlarmCancelMode cancelMode) {
-    switch (cancelMode) {
-      case AlarmCancelMode.slider:
-        return '슬라이더';
-      case AlarmCancelMode.mathProblem:
-        return '수학 문제';
-      case AlarmCancelMode.puzzle:
-        return '퍼즐';
-      case AlarmCancelMode.voiceRecognition:
-        return '음성 인식';
-      default:
-        return '알 수 없음';
-    }
   }
 }
