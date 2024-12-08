@@ -9,6 +9,7 @@ import 'package:flutter_alarm_app_2/settings/settings_page.dart';
 import 'package:flutter_alarm_app_2/statistics/statistics_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 enum AlarmCancelMode {
   slider,
@@ -37,6 +38,7 @@ class AlarmHomePage extends StatefulWidget {
 }
 
 class _AlarmHomePageState extends State<AlarmHomePage> {
+  final Uuid _uuid = const Uuid();
   List<AlarmItem> _alarms = [];
   int _selectedIndex = 0;
 
@@ -87,12 +89,10 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
   }
 
   Future<void> _addAlarm() async {
-    final int newId = (_alarms.isNotEmpty)
-        ? _alarms.map((alarm) => alarm.settings.id).reduce((a, b) => a > b ? a : b) + 1
-        : 1;
+    final String newAlarmId = _uuid.v4(); // 고유한 ID 생성
 
     final AlarmSettings newAlarmSettings = AlarmSettings(
-      id: newId,
+      id: newAlarmId.hashCode, // Firebase에 저장하기 위해 정수로 변환
       dateTime: DateTime.now(),
       assetAudioPath: 'assets/sound/alarm_sound.mp3',
       loopAudio: true,
