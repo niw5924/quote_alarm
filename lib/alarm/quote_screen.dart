@@ -219,7 +219,7 @@ class QuoteScreenState extends State<QuoteScreen> {
             '${widget.alarmId}': {
               'cancelMode': widget.cancelMode.toString().split('.').last,
               'alarmStartTime': alarmStartTimeFormatted, // 알람 설정 시간
-              'dismissalTime': alarmEndTimeFormatted, // 알람 해제 시간
+              'alarmEndTime': alarmEndTimeFormatted, // 알람 해제 시간
               'duration': duration, // 알람 설정 시간과 해제 시간의 차이 (초)
             }
           }
