@@ -26,9 +26,9 @@ class _SettingsPageState extends State<SettingsPage> {
     final authProvider = Provider.of<AuthProvider>(context);
     final uid = authProvider.user?.uid;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
