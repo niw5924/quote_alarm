@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_alarm_app_2/services/naver_news_service.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart'; // URL 열기 위한 패키지
 import 'package:html_unescape/html_unescape.dart'; // HTML 엔티티 디코딩 패키지
 
@@ -40,28 +41,46 @@ class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Center(child: CircularProgressIndicator())
+        ? ListView.builder(
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return Shimmer.fromColors(
+                baseColor: const Color(0xFF7F7F7F).withOpacity(0.2),
+                highlightColor: const Color(0xFFD9D9D9).withOpacity(0.2),
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  height: 140,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+              );
+            },
+          )
         : ListView.builder(
-      itemCount: _newsList.length,
-      itemBuilder: (context, index) {
-        final news = _newsList[index];
-        final decodedTitle = _unescape.convert(news.title); // HTML 디코딩
-        final decodedDescription = _unescape.convert(news.description); // HTML 디코딩
+            itemCount: _newsList.length,
+            itemBuilder: (context, index) {
+              final news = _newsList[index];
+              final decodedTitle = _unescape.convert(news.title); // HTML 디코딩
+              final decodedDescription =
+                  _unescape.convert(news.description); // HTML 디코딩
 
-        return Card(
-          elevation: 2.0,
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: ListTile(
-            title: Text(
-              decodedTitle,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(decodedDescription),
-            onTap: () => _openNewsLink(news.link),
-          ),
-        );
-      },
-    );
+              return Card(
+                elevation: 2.0,
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: ListTile(
+                  title: Text(
+                    decodedTitle,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(decodedDescription),
+                  onTap: () => _openNewsLink(news.link),
+                ),
+              );
+            },
+          );
   }
 
   void _openNewsLink(String url) async {
