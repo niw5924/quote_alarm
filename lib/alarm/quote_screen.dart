@@ -103,7 +103,7 @@ class QuoteScreenState extends State<QuoteScreen> {
     await _flutterTts.setPitch(1.0);
     await _flutterTts.setSpeechRate(0.5);
     await _flutterTts.setVolume(widget.volume);
-    await _flutterTts.speak('"${widget.quote.content}" by ${widget.quote.author}');
+    await _flutterTts.speak('"${widget.quote.quote}" by ${widget.quote.author}');
   }
 
   Future<void> _generateMathProblem() async {
@@ -248,7 +248,7 @@ class QuoteScreenState extends State<QuoteScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      '"${widget.quote.content}"',
+                      '"${widget.quote.quote}"',
                       style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
