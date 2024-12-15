@@ -103,7 +103,8 @@ class QuoteScreenState extends State<QuoteScreen> {
     await _flutterTts.setPitch(1.0);
     await _flutterTts.setSpeechRate(0.5);
     await _flutterTts.setVolume(widget.volume);
-    await _flutterTts.speak('"${widget.quote.quote}" by ${widget.quote.author}');
+    await _flutterTts
+        .speak('"${widget.quote.quote}" by ${widget.quote.author}');
   }
 
   Future<void> _generateMathProblem() async {
@@ -205,10 +206,12 @@ class QuoteScreenState extends State<QuoteScreen> {
       String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
       // 알람 설정 시간 포맷팅
-      String alarmStartTimeFormatted = DateFormat('HH:mm:ss').format(widget.alarmStartTime);
+      String alarmStartTimeFormatted =
+          DateFormat('HH:mm:ss').format(widget.alarmStartTime);
 
       // 알람 해제 시간 포맷팅
-      String alarmEndTimeFormatted = DateFormat('HH:mm:ss').format(DateTime.now());
+      String alarmEndTimeFormatted =
+          DateFormat('HH:mm:ss').format(DateTime.now());
 
       // duration 계산
       int duration = DateTime.now().difference(widget.alarmStartTime).inSeconds;
@@ -239,7 +242,8 @@ class QuoteScreenState extends State<QuoteScreen> {
           automaticallyImplyLeading: false,
         ),
         body: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(), // 화면을 터치하면 키보드가 닫히도록 설정
+          onTap: () => FocusScope.of(context).unfocus(),
+          // 화면을 터치하면 키보드가 닫히도록 설정
           child: Center(
             child: SingleChildScrollView(
               child: Padding(
@@ -249,13 +253,15 @@ class QuoteScreenState extends State<QuoteScreen> {
                   children: [
                     Text(
                       '"${widget.quote.quote}"',
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       '- ${widget.quote.author}',
-                      style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
+                      style: const TextStyle(
+                          fontSize: 18, fontStyle: FontStyle.italic),
                     ),
                     const SizedBox(height: 32),
                     _buildCancelModeUI(),
@@ -280,12 +286,12 @@ class QuoteScreenState extends State<QuoteScreen> {
       case AlarmCancelMode.mathProblem:
         return _isMathProblemGenerated
             ? AlarmCancelMathProblem(
-          firstNumber: _firstNumber,
-          secondNumber: _secondNumber,
-          answerController: _answerController,
-          errorMessage: _errorMessage,
-          onValidateAnswer: _validateAnswer,
-        )
+                firstNumber: _firstNumber,
+                secondNumber: _secondNumber,
+                answerController: _answerController,
+                errorMessage: _errorMessage,
+                onValidateAnswer: _validateAnswer,
+              )
             : const CircularProgressIndicator();
       case AlarmCancelMode.puzzle:
         return AlarmCancelPuzzle(onPuzzleSuccess: cancelAlarm);

@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as path;
 
 class SoundAdditionPage extends StatefulWidget {
-  const SoundAdditionPage({Key? key}) : super(key: key);
+  const SoundAdditionPage({super.key});
 
   @override
   _SoundAdditionPageState createState() => _SoundAdditionPageState();
