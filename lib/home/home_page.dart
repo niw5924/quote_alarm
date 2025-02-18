@@ -83,7 +83,7 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
               alarmId: alarmId,
               cancelMode: cancelMode,
               volume: volume,
-              alarmStartTime: alarmStartTime, // 알람 시작 시간 전달
+              alarmStartTime: alarmStartTime,
             ),
           ),
         );
@@ -98,12 +98,11 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
 
     final AlarmSettings newAlarmSettings = AlarmSettings(
       id: newAlarmId.hashCode,
-      // Firebase에 저장하기 위해 정수로 변환
       dateTime: DateTime.now(),
       assetAudioPath: 'assets/sound/alarm_sound.mp3',
       loopAudio: true,
       vibrate: true,
-      notificationTitle: '알람',
+      notificationTitle: '울림소리',
       notificationBody: '',
       enableNotificationOnKill: true,
     );
@@ -114,7 +113,7 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
         builder: (context) => AlarmEditPage(
           alarmSettings: newAlarmSettings,
           cancelMode: AlarmCancelMode.slider,
-          volume: 1.0, // volume 추가
+          volume: 1.0,
         ),
       ),
     );
@@ -174,7 +173,7 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
           );
           final isEnabled = parts[2] == 'true';
           final cancelMode = AlarmCancelMode.values[int.parse(parts[3])];
-          final volume = double.parse(parts[4]); // volume 추가
+          final volume = double.parse(parts[4]);
           return AlarmItem(alarmSettings, isEnabled,
               cancelMode: cancelMode, volume: volume);
         }).toList();
@@ -234,11 +233,11 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
             },
           );
         case 1:
-          return const StatisticsPage(); // 통계 페이지
+          return const StatisticsPage();
         case 2:
-          return const NewsPage(); // 뉴스 페이지 추가
+          return const NewsPage();
         case 3:
-          return SettingsPage(isDarkTheme: widget.isDarkTheme); // 설정 페이지
+          return SettingsPage(isDarkTheme: widget.isDarkTheme);
         default:
           return const Center(child: Text('페이지를 찾을 수 없습니다.'));
       }
@@ -260,9 +259,9 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
           ),
         ],
       ),
-      body: getBody(), // getBody를 사용해 선택한 페이지 렌더링
+      body: getBody(),
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // 고정형 스타일
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.alarm),

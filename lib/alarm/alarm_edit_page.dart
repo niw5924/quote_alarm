@@ -39,7 +39,8 @@ class _AlarmEditPageState extends State<AlarmEditPage> {
   void initState() {
     super.initState();
     _selectedTime = TimeOfDay.fromDateTime(widget.alarmSettings.dateTime);
-    _memoController = TextEditingController(text: widget.alarmSettings.notificationBody);
+    _memoController =
+        TextEditingController(text: widget.alarmSettings.notificationBody);
     _cancelMode = widget.cancelMode;
     _selectedAudioPath = widget.alarmSettings.assetAudioPath;
     _volume = widget.volume;
@@ -78,7 +79,7 @@ class _AlarmEditPageState extends State<AlarmEditPage> {
     final updatedAlarmSettings = widget.alarmSettings.copyWith(
       dateTime: updatedAlarmTime,
       notificationBody: _memoController.text,
-      assetAudioPath: _selectedAudioPath, // 선택된 오디오 경로 저장
+      assetAudioPath: _selectedAudioPath,
     );
 
     final updatedAlarmItem = AlarmItem(
@@ -110,7 +111,7 @@ class _AlarmEditPageState extends State<AlarmEditPage> {
           ),
         ],
       ),
-      resizeToAvoidBottomInset: true,  // 키보드 올라올 때 화면 조정
+      resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -194,9 +195,10 @@ class _AlarmEditPageState extends State<AlarmEditPage> {
                             child: Text(
                               '수학 문제',
                               style: TextStyle(
-                                color: _cancelMode == AlarmCancelMode.mathProblem
-                                    ? const Color(0xFF1A1A1A)
-                                    : Colors.grey,
+                                color:
+                                    _cancelMode == AlarmCancelMode.mathProblem
+                                        ? const Color(0xFF1A1A1A)
+                                        : Colors.grey,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -234,7 +236,8 @@ class _AlarmEditPageState extends State<AlarmEditPage> {
                             child: Text(
                               '음성 인식',
                               style: TextStyle(
-                                color: _cancelMode == AlarmCancelMode.voiceRecognition
+                                color: _cancelMode ==
+                                        AlarmCancelMode.voiceRecognition
                                     ? const Color(0xFF1A1A1A)
                                     : Colors.grey,
                                 fontWeight: FontWeight.bold,
@@ -268,7 +271,8 @@ class _AlarmEditPageState extends State<AlarmEditPage> {
                       _selectedAudioPath = newValue!;
                     });
                   },
-                  items: allSoundFiles.map<DropdownMenuItem<String>>((String value) {
+                  items: allSoundFiles
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(

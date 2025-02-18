@@ -22,7 +22,7 @@ class AlarmCancelSlider extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          width: 150,
+          width: MediaQuery.of(context).size.width / 2,
           child: SliderTheme(
             data: SliderTheme.of(context).copyWith(
               trackHeight: 50.0,
@@ -30,7 +30,7 @@ class AlarmCancelSlider extends StatelessWidget {
                 enabledThumbRadius: 30.0,
               ),
               overlayShape: const RoundSliderOverlayShape(
-                overlayRadius: 30.0,
+                overlayRadius: 40.0,
               ),
               thumbColor: Colors.white,
               activeTrackColor: const Color(0xFF6BF3B1),

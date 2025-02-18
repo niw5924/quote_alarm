@@ -21,7 +21,7 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()), // AuthProvider 추가
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: QuoteAlarmApp(isDarkTheme: isDarkTheme),
     ),
@@ -59,34 +59,35 @@ class _QuoteAlarmAppState extends State<QuoteAlarmApp> {
     return MaterialApp(
       theme: _isDarkTheme
           ? ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: const Color(0xFF101317),
-        scaffoldBackgroundColor: const Color(0xFF101317),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF151922),
-          foregroundColor: Colors.white,
-        ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: const Color(0xFF151922),
-          selectedItemColor: const Color(0xFFDDDDDD),
-          unselectedItemColor: Colors.grey[700],
-        ),
-      )
+              brightness: Brightness.dark,
+              primaryColor: const Color(0xFF101317),
+              scaffoldBackgroundColor: const Color(0xFF101317),
+              appBarTheme: const AppBarTheme(
+                backgroundColor: Color(0xFF151922),
+                foregroundColor: Colors.white,
+              ),
+              bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                backgroundColor: const Color(0xFF151922),
+                selectedItemColor: const Color(0xFFDDDDDD),
+                unselectedItemColor: Colors.grey[700],
+              ),
+            )
           : ThemeData(
-        brightness: Brightness.light,
-        primaryColor: const Color(0xFFFFFBEA),
-        scaffoldBackgroundColor: const Color(0xFFFFFBEA),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFF8EDD8),
-          foregroundColor: Colors.black,
-        ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: const Color(0xFFF8EDD8),
-          selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.grey[700],
-        ),
-      ),
-      home: AlarmHomePage(onThemeToggle: _toggleTheme, isDarkTheme: _isDarkTheme),
+              brightness: Brightness.light,
+              primaryColor: const Color(0xFFFFFBEA),
+              scaffoldBackgroundColor: const Color(0xFFFFFBEA),
+              appBarTheme: const AppBarTheme(
+                backgroundColor: Color(0xFFF8EDD8),
+                foregroundColor: Colors.black,
+              ),
+              bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                backgroundColor: const Color(0xFFF8EDD8),
+                selectedItemColor: Colors.black,
+                unselectedItemColor: Colors.grey[700],
+              ),
+            ),
+      home:
+          AlarmHomePage(onThemeToggle: _toggleTheme, isDarkTheme: _isDarkTheme),
     );
   }
 }
