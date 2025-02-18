@@ -24,14 +24,16 @@ class AlarmItem {
   AlarmCancelMode cancelMode;
   double volume;
 
-  AlarmItem(this.settings, this.isEnabled, {this.cancelMode = AlarmCancelMode.slider, this.volume = 1.0});
+  AlarmItem(this.settings, this.isEnabled,
+      {this.cancelMode = AlarmCancelMode.slider, this.volume = 1.0});
 }
 
 class AlarmHomePage extends StatefulWidget {
   final Function(bool) onThemeToggle;
   final bool isDarkTheme;
 
-  const AlarmHomePage({super.key, required this.onThemeToggle, required this.isDarkTheme});
+  const AlarmHomePage(
+      {super.key, required this.onThemeToggle, required this.isDarkTheme});
 
   @override
   _AlarmHomePageState createState() => _AlarmHomePageState();
@@ -50,22 +52,25 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
     // 알람이 울릴 때 QuoteScreen으로 이동
     Alarm.ringStream.stream.listen((alarmSettings) async {
       final matchingAlarm = _alarms.firstWhere(
-            (alarm) => alarm.settings.id == alarmSettings.id,
-        orElse: () => AlarmItem(alarmSettings, false, cancelMode: AlarmCancelMode.slider, volume: 1.0),
+        (alarm) => alarm.settings.id == alarmSettings.id,
+        orElse: () => AlarmItem(alarmSettings, false,
+            cancelMode: AlarmCancelMode.slider, volume: 1.0),
       );
 
       if (matchingAlarm.isEnabled) {
         final DateTime alarmStartTime = DateTime.now();
 
         // 명언 가져오는 서비스
-        await _showQuoteScreen(matchingAlarm.settings.id, matchingAlarm.cancelMode, matchingAlarm.volume, alarmStartTime);
+        await _showQuoteScreen(matchingAlarm.settings.id,
+            matchingAlarm.cancelMode, matchingAlarm.volume, alarmStartTime);
       } else {
         await Alarm.stop(alarmSettings.id); // 알람 중지
       }
     });
   }
 
-  Future<void> _showQuoteScreen(int alarmId, AlarmCancelMode cancelMode, double volume, DateTime alarmStartTime) async {
+  Future<void> _showQuoteScreen(int alarmId, AlarmCancelMode cancelMode,
+      double volume, DateTime alarmStartTime) async {
     final quoteService = QuoteService();
     try {
       final quote = await quoteService.fetchRandomQuote();
@@ -92,7 +97,8 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
     final String newAlarmId = _uuid.v4(); // 고유한 ID 생성
 
     final AlarmSettings newAlarmSettings = AlarmSettings(
-      id: newAlarmId.hashCode, // Firebase에 저장하기 위해 정수로 변환
+      id: newAlarmId.hashCode,
+      // Firebase에 저장하기 위해 정수로 변환
       dateTime: DateTime.now(),
       assetAudioPath: 'assets/sound/alarm_sound.mp3',
       loopAudio: true,
@@ -124,17 +130,18 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
       final alarmTime = updatedAlarmItem.settings.dateTime;
 
       final difference = alarmTime.difference(now);
-      final hours = difference.inHours;
-      final minutes = difference.inMinutes % 60;
+      final totalMinutes =
+          (difference.inSeconds / 60).ceil(); // 초 단위까지 올림 후 분 계산
+      final hours = totalMinutes ~/ 60;
+      final minutes = totalMinutes % 60;
 
-      // 토스트 메시지 표시
       Fluttertoast.showToast(
         msg: hours > 0
             ? '알람이 약 $hours시간 $minutes분 후에 울립니다.'
             : '알람이 약 $minutes분 후에 울립니다.',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.black.withOpacity(0.8),
+        backgroundColor: Colors.black.withValues(alpha: 0.8),
         textColor: Colors.white,
       );
     }
@@ -168,7 +175,8 @@ class _AlarmHomePageState extends State<AlarmHomePage> {
           final isEnabled = parts[2] == 'true';
           final cancelMode = AlarmCancelMode.values[int.parse(parts[3])];
           final volume = double.parse(parts[4]); // volume 추가
-          return AlarmItem(alarmSettings, isEnabled, cancelMode: cancelMode, volume: volume);
+          return AlarmItem(alarmSettings, isEnabled,
+              cancelMode: cancelMode, volume: volume);
         }).toList();
       });
     }

@@ -32,8 +32,6 @@ class AlarmListPage extends StatelessWidget {
         return '퍼즐';
       case AlarmCancelMode.voiceRecognition:
         return '음성 인식';
-      default:
-        return '알 수 없음';
     }
   }
 
@@ -46,7 +44,10 @@ class AlarmListPage extends StatelessWidget {
         final dateTime = alarmItem.settings.dateTime;
 
         // 시간 표시 포맷팅
-        final formattedTime = DateFormat('a h:mm').format(dateTime).replaceAll('AM', '오전').replaceAll('PM', '오후');
+        final formattedTime = DateFormat('a h:mm')
+            .format(dateTime)
+            .replaceAll('AM', '오전')
+            .replaceAll('PM', '오후');
 
         // 알람 해제 유형 텍스트 변환
         final cancelModeText = _getCancelModeText(alarmItem.cancelMode);
@@ -84,14 +85,15 @@ class AlarmListPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 5,
                     offset: const Offset(0, 3),
                   ),
                 ],
               ),
               child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 title: RichText(
                   text: TextSpan(
                     children: [
@@ -138,17 +140,20 @@ class AlarmListPage extends StatelessWidget {
                 trailing: Switch(
                   value: alarmItem.isEnabled,
                   onChanged: (value) {
-                    HapticFeedback.mediumImpact(); // 미디엄 햅틱 피드백 추가
+                    HapticFeedback.mediumImpact();
                     onToggleAlarm(alarmItem);
 
-                    if (value) { // 스위치가 켜질 때만 실행
+                    if (value) {
+                      // 스위치가 켜질 때만 실행
                       final now = DateTime.now();
                       final alarmTime = alarmItem.settings.dateTime;
 
                       if (alarmTime.isAfter(now)) {
                         final difference = alarmTime.difference(now);
-                        final hours = difference.inHours;
-                        final minutes = difference.inMinutes % 60;
+                        final totalMinutes = (difference.inSeconds / 60)
+                            .ceil(); // 초를 올림하여 분으로 변환
+                        final hours = totalMinutes ~/ 60;
+                        final minutes = totalMinutes % 60;
 
                         Fluttertoast.showToast(
                           msg: hours > 0
@@ -156,7 +161,7 @@ class AlarmListPage extends StatelessWidget {
                               : '알람이 약 $minutes분 후에 울립니다.',
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.black.withOpacity(0.8),
+                          backgroundColor: Colors.black.withValues(alpha: 0.8),
                           textColor: Colors.white,
                         );
                       } else {
@@ -164,7 +169,8 @@ class AlarmListPage extends StatelessWidget {
                           msg: '알람 시간이 현재 시간보다 이전입니다.',
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.redAccent.withOpacity(0.8),
+                          backgroundColor:
+                              Colors.redAccent.withValues(alpha: 0.8),
                           textColor: Colors.white,
                         );
                       }
