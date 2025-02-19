@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:alarm/alarm.dart';
 import 'package:flutter_alarm_app_2/home/home_page.dart';
+import 'package:flutter_weekday_selector/flutter_weekday_selector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AlarmEditPage extends StatefulWidget {
@@ -21,12 +22,9 @@ class AlarmEditPage extends StatefulWidget {
 
 class _AlarmEditPageState extends State<AlarmEditPage> {
   late TimeOfDay _selectedTime;
-  late TextEditingController _memoController;
+  final WeekDaySelectorController _weekDayController =
+      WeekDaySelectorController();
   late AlarmCancelMode _cancelMode;
-  String _selectedAudioPath = 'assets/sound/alarm_sound.mp3';
-  late double _volume;
-  List<String> _customSoundFiles = []; // 사용자 사운드 파일 목록
-
   final List<String> _defaultSoundFiles = [
     'assets/sound/alarm_cuckoo.mp3',
     'assets/sound/alarm_sound.mp3',
@@ -34,6 +32,10 @@ class _AlarmEditPageState extends State<AlarmEditPage> {
     'assets/sound/alarm_gun.mp3',
     'assets/sound/alarm_emergency.mp3',
   ];
+  List<String> _customSoundFiles = []; // 사용자 사운드 파일 목록
+  String _selectedAudioPath = 'assets/sound/alarm_sound.mp3';
+  late double _volume;
+  late TextEditingController _memoController;
 
   @override
   void initState() {
@@ -136,6 +138,29 @@ class _AlarmEditPageState extends State<AlarmEditPage> {
                   color: Colors.grey,
                 ),
                 onTap: _selectTime,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text('요일 선택', style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A1A1A),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: WeekDaySelector(
+                controller: _weekDayController,
+                width: MediaQuery.of(context).size.width * 3 / 4,
+                height: 50,
+                shape: BoxShape.circle,
+                weekDayStart: WeekDayName.monday,
+                onSubmitted: (day) {
+                  setState(() {
+                    print(
+                        "${day.name} is ${day.isSelected ? 'selected' : 'unselected'}");
+                  });
+                },
               ),
             ),
             const SizedBox(height: 16),
