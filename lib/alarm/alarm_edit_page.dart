@@ -155,6 +155,7 @@ class _AlarmEditPageState extends State<AlarmEditPage> {
                 height: 50,
                 shape: BoxShape.circle,
                 weekDayStart: WeekDayName.monday,
+                style: const TextStyle(color: Colors.grey),
                 onSubmitted: (day) {
                   setState(() {
                     print(
