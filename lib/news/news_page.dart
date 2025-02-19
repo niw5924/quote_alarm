@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_alarm_app_2/services/naver_news_service.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:url_launcher/url_launcher.dart'; // URL 열기 위한 패키지
-import 'package:html_unescape/html_unescape.dart'; // HTML 엔티티 디코딩 패키지
+import 'package:url_launcher/url_launcher.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({super.key});
@@ -45,8 +45,8 @@ class _NewsPageState extends State<NewsPage> {
             itemCount: 10,
             itemBuilder: (context, index) {
               return Shimmer.fromColors(
-                baseColor: const Color(0xFF7F7F7F).withOpacity(0.2),
-                highlightColor: const Color(0xFFD9D9D9).withOpacity(0.2),
+                baseColor: const Color(0xFF7F7F7F).withValues(alpha: 0.2),
+                highlightColor: const Color(0xFFD9D9D9).withValues(alpha: 0.2),
                 child: Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -70,13 +70,19 @@ class _NewsPageState extends State<NewsPage> {
               return Card(
                 elevation: 2.0,
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: ListTile(
-                  title: Text(
-                    decodedTitle,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(decodedDescription),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12.0),
                   onTap: () => _openNewsLink(news.link),
+                  child: ListTile(
+                    title: Text(
+                      decodedTitle,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(decodedDescription),
+                  ),
                 ),
               );
             },
